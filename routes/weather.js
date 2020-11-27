@@ -9,10 +9,10 @@ const cn = {
     port: 5432,
     database: 'postgres',
     user: 'postgres',
-    password: 'PjWfjSg4M',
+    password: 'rootroot',
     max: 10
 };
-var db = pgp("postgres://postgres:PjWfjSg4M@localhost:5432/postgres");
+var db = pgp("postgres://postgres:rootroot@localhost:5432/postgres");
 
 db.one("CREATE TABLE IF NOT EXISTS favorites (id SERIAL PRIMARY KEY, lat varchar, lon varchar)");
 
@@ -54,7 +54,6 @@ router.get('/weather/coordinates', function (req, res, next) {
 });
 
 router.delete('/favourites', function (req, res, next) {
-    res.setHeader("FUCK", "YOU")
     db.result("DELETE FROM favorites WHERE id IN (SELECT id FROM favorites WHERE lat = $1 AND lon = $2 LIMIT 1)", [req.query.lat, req.query.lon])
         .then(function (data) {
             res.status(200).send({})
