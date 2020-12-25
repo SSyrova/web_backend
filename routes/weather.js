@@ -9,10 +9,10 @@ const cn = {
     port: 5432,
     database: 'postgres',
     user: 'postgres',
-    password: 'PjWfjSg4M',
+    password: 'rootroot',
     max: 10
 };
-var db = pgp("postgres://postgres:PjWfjSg4M@localhost:5432/postgres");
+var db = pgp("postgres://postgres:rootroot@localhost:5432/postgres");
 
 db.one("CREATE TABLE IF NOT EXISTS favorites (id SERIAL PRIMARY KEY, lat varchar, lng varchar)");
 
@@ -44,7 +44,7 @@ router.get('/weather/city', function (req, res, next) {
 router.get('/weather/coordinates', function (req, res, next) {
     var options = {
         host: "api.openweathermap.org",
-        path: "/data/2.5/weather?units=metric&lang=ru&lat=" + req.query.lat + "&lon=" + req.query.lng + "&appid=" + apiKey
+        path: "/data/2.5/weather?units=metric&lang=ru&lat=" + req.query.lat + "&lon=" + req.query.lon + "&appid=" + apiKey
     };
     https.get(options, function (response) {
         response.on('data', function (data) {
