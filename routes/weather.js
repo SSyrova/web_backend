@@ -14,7 +14,7 @@ const cn = {
 };
 var db = pgp("postgres://postgres:PjWfjSg4M@localhost:5432/postgres");
 
-db.one("CREATE TABLE IF NOT EXISTS favorites (id SERIAL PRIMARY KEY, lat varchar, lon varchar)");
+db.one("CREATE TABLE IF NOT EXISTS favorites (id SERIAL PRIMARY KEY, lat varchar, lng varchar)");
 
 const apiKey = "6d2a4733147114b53616a260387a5b83";
 
@@ -27,7 +27,7 @@ router.get('/weather/city', function (req, res, next) {
         },
         path: "/classes/City?limit=20&keys=name,country.name,location&where=" + encodeURIComponent(JSON.stringify({
             "name": {
-                "$regex": req.query.name.charAt(0).toUpperCase() + req.query.name.slice(1).toLowerCase()
+                "$regex": req.query.name
             }
         }))
     };
@@ -44,7 +44,7 @@ router.get('/weather/city', function (req, res, next) {
 router.get('/weather/coordinates', function (req, res, next) {
     var options = {
         host: "api.openweathermap.org",
-        path: "/data/2.5/weather?units=metric&lang=ru&lat=" + req.query.lat + "&lon=" + req.query.lon + "&appid=" + apiKey
+        path: "/data/2.5/weather?units=metric&lang=ru&lat=" + req.query.lat + "&lon=" + req.query.lng + "&appid=" + apiKey
     };
     https.get(options, function (response) {
         response.on('data', function (data) {
@@ -54,8 +54,7 @@ router.get('/weather/coordinates', function (req, res, next) {
 });
 
 router.delete('/favourites', function (req, res, next) {
-    res.setHeader("FUCK", "YOU")
-    db.result("DELETE FROM favorites WHERE id IN (SELECT id FROM favorites WHERE lat = $1 AND lon = $2 LIMIT 1)", [req.query.lat, req.query.lon])
+    db.result("DELETE FROM favorites WHERE id IN (SELECT id FROM favorites WHERE lat = $1 AND lng = $2 LIMIT 1)", [req.query.lat, req.query.lng])
         .then(function (data) {
             res.status(200).send({})
         })
@@ -65,7 +64,7 @@ router.delete('/favourites', function (req, res, next) {
 });
 
 router.post('/favourites', function (req, res, next) {
-    db.result("INSERT INTO favorites (lat, lon) VALUES ($1, $2)", [req.query.lat, req.query.lon])
+    db.result("INSERT INTO favorites (lat, lng) VALUES ($1, $2)", [req.query.lat, req.query.lng])
         .then(function (data) {
             res.status(200).json({})
         })
@@ -78,7 +77,7 @@ var QRE = pgp.errors.QueryResultError;
 var qrec = pgp.errors.queryResultErrorCode;
 
 router.get('/favourites', function (req, res, next) {
-    db.many("SELECT lat, lon FROM favorites")
+    db.many("SELECT lat, lng FROM favorites")
         .then(function (data) {
             res.json(data);
         })

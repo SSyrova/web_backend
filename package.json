@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "mocha"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,5 +17,8 @@
     "pg-promise": "^10.8.0",
     "pug": "2.0.0-beta11",
     "requests": "^0.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1"
   }
 }
